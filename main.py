@@ -39,7 +39,8 @@ def getDate(date):
 
 
 def main():
-    while takingQueries = True:
+    takingQueries = True
+    while takingQueries:
         print("input topic to extract articles on: ")
         queryTopic = input("> ")
         tokens = nltk.word_tokenize(queryTopic)
@@ -61,9 +62,9 @@ def main():
             date = getDate(dateInput)
 
         # month in the past only
-        #2021-12-20
-            url = "https://newsapi.org/v2/everything?q=" + query + "&from=" + date + "&sortBy=publishedAt&language=" + lang\
-                + "&apiKey=" + apiKey
+        # 2021-12-20
+            url = "https://newsapi.org/v2/everything?q=" + query + "&from=" + date + "&sortBy=publishedAt&language="\
+                  + lang + "&apiKey=" + apiKey
 
             allData = requests.get(url)
             allJSONData = allData.json()
