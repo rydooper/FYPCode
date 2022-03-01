@@ -22,11 +22,13 @@ def main():
     # give user input to newsAPI to collect topics
     if tagged[0][1] == 'NN':
         print(tagged[0][0], "is a noun!")
-        # query = tagged[0][0]
+        userQuery = tagged[0][0]
+
 
         # spider gets articles output as csv
         subprocess.run('scrapy runspider headlineScraper.py -o scrapedHeadlines.csv')
 
         # bs4 used to interpret HTML pages
+
 
 main()
