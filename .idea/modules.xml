@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/OneDrive/Documents/GitHub/AI-FYP-Tests/.idea/AI-FYP-Tests.iml" filepath="$USER_HOME$/OneDrive/Documents/GitHub/AI-FYP-Tests/.idea/AI-FYP-Tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/FYPCode.iml" filepath="$PROJECT_DIR$/.idea/FYPCode.iml" />
     </modules>
   </component>
