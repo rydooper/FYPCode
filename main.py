@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 # ryder franklin
 # FYP - AI news extraction
-import datetime
 
+import datetime
 import nltk
 import seleniumDataExtraction as dataScraper
 import csv
@@ -10,7 +11,6 @@ import seleniumWebScraperOptions as ws
 # cite here for documentation: Bird, Steven, Edward Loper and Ewan Klein (2009),
 # Natural Language Processing with Python. O’Reilly Media Inc
 # <- NLTK
-
 
 if __name__ == "__main__":
     # create the driver object.
