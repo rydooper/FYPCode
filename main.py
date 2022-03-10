@@ -1,34 +1,32 @@
 # ryder franklin
 # FYP - AI news extraction
-import nltk
-import subprocess
-import requests
-from bs4 import BeautifulSoup
-import numpy as np
-import pandas as pd
+import datetime
 
+import nltk
+import seleniumDataExtraction as dataScraper
+import csv
+import seleniumWebScraperOptions as ws
 
 # cite here for documentation: Bird, Steven, Edward Loper and Ewan Klein (2009),
 # Natural Language Processing with Python. O’Reilly Media Inc
 # <- NLTK
 
 
-def main():
+if __name__ == "__main__":
+    # create the driver object.
     print("input topic to extract articles on: ")
-    userInput = input("> ")
-    tokens = nltk.word_tokenize(userInput)
-    tagged = nltk.pos_tag(tokens)
+    userQuery = input("> ")
+    url = "https://www.bbc.co.uk/search?q=" + userQuery
+    driver = ws.chromeDriverSetup()
+    dataScraper.getData(driver, url)
+    driver.close()  # close the driver!
 
-    # give user input to newsAPI to collect topics
-    if tagged[0][1] == 'NN':
-        print(tagged[0][0], "is a noun!")
-        userQuery = tagged[0][0]
+    with open('articlesData.csv', 'w', encoding="utf-8") as fd:
+        reader = csv.writer(fd, delimiter=",")
+        # writes all the articles found to articlesData.csv
+        for article in dataScraper.allArticles:
+            reader.writerow([article.title, article.link, article.summary, article.type,
+                             article.publishDate, article.publisher, article.imageSrc, article.imageAlt])
+        reader.writerow(["lastUpdated: ", datetime.datetime.now()])
 
-
-        # spider gets articles output as csv
-        subprocess.run('scrapy runspider headlineScraper.py -o scrapedHeadlines.csv')
-
-        # bs4 used to interpret HTML pages
-
-
-main()
+    print("Articles scraped and appended to articlesData.csv")
