@@ -1,19 +1,41 @@
 from bs4 import BeautifulSoup as Soup
+from selenium.webdriver.common.by import By
 
 counter = 0
 allArticles = []
+allMetaData = []
 
 
 class articleData:
-    def __init__(self, title, link, summary, articleType, publishDate, publisher, imageSrc, imageAlt):
+    def __init__(self, title, summary, contents):
         self.title = title
-        self.link = link
         self.summary = summary
-        self.type = articleType
-        self.publishDate = publishDate
+        self.contents = contents
+
+
+class articleMetadata:
+    def __init__(self, link, AType, publisher, publishDate, imageSrc, imageAlt):
+        self.link = link
+        self.type = AType
         self.publisher = publisher
+        self.publishDate = publishDate
         self.imageSrc = imageSrc
         self.imageAlt = imageAlt
+
+
+def getArticleContents(driver, soup, link):
+    driver.get(link)
+    articleContents: list = []
+
+    # Printing the whole body text
+    allTextContents = driver.find_element(by=By.XPATH, value="/html/body/div/div/main/div/div/div").text
+    print(allTextContents)
+
+    # allText = soup.findAll("div", {"class": "ssrcss-uf6wea-RichTextComponentWrapper e1xue1li86"})
+    # print(allText)
+    # print(soup.get_text())
+
+    return articleContents
 
 
 def getData(driver, url):
@@ -72,9 +94,13 @@ def getData(driver, url):
                 else:
                     print("unknown error at element: ", element)
 
+        if articleType == "News":
+            articleContents = getArticleContents(driver, soup, articleLink)
+        else:
+            articleContents = "Unknown"
         # article contents retrieved, now appending to list
-        newArticle = articleData(articleTitle.text, articleLink, articleSummary.text, articleType,
-                                 articlePublished, articleLocation, imgSrc, imgAlt)
+        newArticle = articleData(articleTitle.text, articleSummary.text, articleContents)
+        newMetadata = articleMetadata(articleLink, articleType, articleLocation, articlePublished, imgSrc, imgAlt)
         for val in allArticles:
             if val.title == newArticle.title:
                 duplicateArticle = True
@@ -83,6 +109,8 @@ def getData(driver, url):
             continue
         else:
             allArticles.append(newArticle)
+            allMetaData.append(newMetadata)
+
 
 '''
     next_pages_div = soup.find("div", {"class": "pagination__nav"})
