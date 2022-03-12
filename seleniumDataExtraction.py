@@ -1,3 +1,5 @@
+import re
+
 from bs4 import BeautifulSoup as Soup
 from selenium.webdriver.common.by import By
 
@@ -28,9 +30,13 @@ def getArticleContents(driver, soup, link):
     articleContents: list = []
 
     # Printing the whole body text
-    allTextContents = driver.find_element(by=By.XPATH, value="/html/body/div/div/main/div/div/div").text
-    print(allTextContents)
-
+    allTextContentsStr = driver.find_element(by=By.XPATH, value="/html/body/div/div/main/div/div/div").text
+    allTextContents: list = allTextContentsStr.split('\n')
+    for index, contents in enumerate(allTextContents):
+        if contents == "More on this story":
+            break
+        else:
+            articleContents.append(contents)
     # allText = soup.findAll("div", {"class": "ssrcss-uf6wea-RichTextComponentWrapper e1xue1li86"})
     # print(allText)
     # print(soup.get_text())
@@ -38,7 +44,7 @@ def getArticleContents(driver, soup, link):
     return articleContents
 
 
-def getData(driver, url):
+def getData(driver, url, userQuery):
     global articleTitle, articleSummary, articleLink, articlePublished, articleType, articleLocation, imgSrc, imgAlt
 
     driver.implicitly_wait(1)
@@ -95,9 +101,16 @@ def getData(driver, url):
                     print("unknown error at element: ", element)
 
         if articleType == "News":
-            articleContents = getArticleContents(driver, soup, articleLink)
+            articleConList = getArticleContents(driver, soup, articleLink)
+            articleConStr = str(articleConList)
+            articleCon1 = re.sub("[\\[[]", "", articleConStr)
+            articleCon2 = re.sub("'", "", articleCon1)
+            articleCon3 = re.sub(",", "", articleCon2)
+            articleCon4 = re.sub('"', "", articleCon3)
+            articleContents: str = re.sub("[[]", "", articleCon4)
         else:
             articleContents = "Unknown"
+
         # article contents retrieved, now appending to list
         newArticle = articleData(articleTitle.text, articleSummary.text, articleContents)
         newMetadata = articleMetadata(articleLink, articleType, articleLocation, articlePublished, imgSrc, imgAlt)
@@ -111,9 +124,14 @@ def getData(driver, url):
             allArticles.append(newArticle)
             allMetaData.append(newMetadata)
 
+    print(url)
 
-'''
-    next_pages_div = soup.find("div", {"class": "pagination__nav"})
+    listFind = driver.find_element_by_xpath("/html/body/div[1]/div/main/div[1]/div[4]/div/div/nav/div/div/div[3]/div/ol")
+    # wrapSelect = sectionSelect.find("div", {"class": "ssrcss-1ocoo3l-Wrap e42f8511"})
+    # listSelect = driver.find_element(by=By.XPATH, value=wrapSelect + "/div/div/nav/div/div")
+    finalPageNum = 0
+    nextURL = "https://www.bbc.co.uk/search?q=" + userQuery + "&page=" + finalPageNum
+    '''next_pages_div = soup.find("div", {"class": "pagination__nav"})
     pages = next_pages_div.findAll("a", {"class": "pagination__nav-item"})
 
     for pageCounter in pages:

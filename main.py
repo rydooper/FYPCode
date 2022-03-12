@@ -25,22 +25,24 @@ def webScrape():
     # driver = webdriver.Chrome(ChromeDriverManager().install())
     # #<- test this later to see if user doesnt have to manually download chromedriver
 
-    dataScraper.getData(driver, url)
+    dataScraper.getData(driver, url, userQuery)
     driver.close()  # close the driver!
-
-    with open('articlesData.csv', 'w', encoding="utf-8") as ad:
+    csvName = 'articlesData-' + userQuery + '.csv'
+    metaCSVName = 'articlesMetadata-' + userQuery + '.csv'
+    with open(csvName, 'w', encoding="utf-8") as ad:
         reader = csv.writer(ad, delimiter=",")
         # writes all the articles found to articlesData.csv
         for article in dataScraper.allArticles:
             reader.writerow([article.title, article.summary, article.contents])
         reader.writerow(["lastUpdated: ", datetime.datetime.now(), "with userQuery: ", userQuery])
-    with open('articlesMetadata.csv', 'w', encoding="utf-8") as amd:
+
+    with open(metaCSVName, 'w', encoding="utf-8") as amd:
         reader = csv.writer(amd, delimiter=",")
         for meta in dataScraper.allMetaData:
             reader.writerow([meta.link, meta.type, meta.publisher, meta.publishDate, meta.imageSrc, meta.imageAlt])
         reader.writerow(["lastUpdated: ", datetime.datetime.now(), "with userQuery: ", userQuery])
 
-    print("Articles scraped and appended to articlesData.csv, metaData stored in articlesMetadata.csv")
+    print("Articles scraped and appended to ", csvName, ", metaData stored in ", metaCSVName)
 
 
 def wordCloud():
@@ -48,7 +50,7 @@ def wordCloud():
     d = path.dirname(__file__) if "__file__" in locals() else os.getcwd()
 
     # Read the whole text.
-    text = open(path.join(d, 'articlesData.csv')).read()
+    text = open(path.join(d, 'articlesData-ukraine.csv'), encoding="utf-8").read()
 
     # Generate a word cloud image
     wordcloud = WordCloud().generate(text)
