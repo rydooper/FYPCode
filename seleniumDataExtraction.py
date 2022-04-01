@@ -159,7 +159,6 @@ def getData(driver, url, userQuery, nextPageCollected):
             runNextPageLoop(driver, userQuery, extraDiv)
     except Exception as error:
         print("Error while webscraping!")
-        print(error)
 
 
 def webScrape():

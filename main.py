@@ -2,6 +2,7 @@
 # ryder franklin
 # FYP - AI news extraction
 import seleniumDataExtraction as dataScraper
+import hotTopicExtraction as hte
 import os
 from os import path
 from wordcloud import WordCloud
@@ -34,6 +35,7 @@ def wordCloud():
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
     plt.show()
+    # generate on each topic from HTE
 
 
 if __name__ == "__main__":
@@ -43,7 +45,8 @@ if __name__ == "__main__":
         print("Do you wish to: "
               "[1] Scrape for articles on a specified topic "
               "[2] Generate a wordcloud on available data "
-              "[3] Close Program ")
+              "[3] Run hot topic extraction on available data "
+              "[4] Close Program ")
         userChoice = input("> ")
         if userChoice == "1":
             print("Please ensure you have a valid version of chrome "
@@ -54,6 +57,8 @@ if __name__ == "__main__":
             # EDA with word cloud
             wordCloud()
         elif userChoice == "3":
+            hte.runExtraction()
+        elif userChoice == "4":
             print("Exiting program now.")
             takingQueries = False
         else:
