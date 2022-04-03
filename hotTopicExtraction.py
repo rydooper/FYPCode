@@ -1,7 +1,6 @@
 # code adapted from https://stackoverflow.com/questions/61560056/
 # extracting-key-phrases-from-text-based-on-the-topic-with-python
 import csv
-
 import nltk
 import pandas as pd
 from nltk.stem import WordNetLemmatizer
@@ -69,7 +68,7 @@ def runExtraction():
         csvName = 'HTETopics' + userQuery + '.csv'
     with open(csvName, 'w', encoding="utf-8") as ad:
         reader = csv.writer(ad, delimiter=",")
-        reader.writerow('topic')
+        reader.writerow(["topic"])
         for topic in allHTE:
             reader.writerow([topic.topics])
 

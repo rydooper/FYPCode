@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 def wordCloud():
     print("Input the full name of the csv file you wish to generate a word cloud on: ")
-    fileName = input("> ")
+    fileName = input("> ")  # each topic from HTE can be grabbed using this
     # get data directory
     d = path.dirname(__file__) if "__file__" in locals() else os.getcwd()
     text = open(path.join(d, fileName), encoding="utf-8").read()
