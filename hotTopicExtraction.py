@@ -1,5 +1,7 @@
 # code adapted from https://stackoverflow.com/questions/61560056/
 # extracting-key-phrases-from-text-based-on-the-topic-with-python
+import csv
+
 import nltk
 import pandas as pd
 from nltk.stem import WordNetLemmatizer
@@ -17,6 +19,13 @@ from sklearn.feature_extraction.text import CountVectorizer
 # cite here for documentation: Bird, Steven, Edward Loper and Ewan Klein (2009),
 # Natural Language Processing with Python. O’Reilly Media Inc
 # <- NLTK
+
+allHTE = []
+
+
+class HTETopics:
+    def __init__(self, topics):
+        self.topics = topics
 
 
 def runExtraction():
@@ -49,6 +58,17 @@ def runExtraction():
     for i, topic_dist in enumerate(topic_word):
         topic_words = np.array(vocab)[np.argsort(topic_dist)][:-(n_top_words + 1):-1]
         print('Topic {}: {}'.format(i, ' '.join(topic_words)))
+        newHTE = HTETopics(topic_words)
+        allHTE.append(newHTE)
+
+    userQ1 = fileName.split('articlesData')[1]
+    userQuery = userQ1.split('.csv')[0]
+    csvName = 'HTETopics' + userQuery + '.csv'
+    with open(csvName, 'w', encoding="utf-8") as ad:
+        reader = csv.writer(ad, delimiter=",")
+        reader.writerow('topic')
+        for topic in allHTE:
+            reader.writerow([topic.topics])
 
 
 if __name__ == '__main__':
