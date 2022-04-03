@@ -7,15 +7,22 @@ from nltk.stem import WordNetLemmatizer
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('omw-1.4')
+nltk.download('punkt')
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import lda
 from sklearn.feature_extraction.text import CountVectorizer
 
+# cite here for documentation: Bird, Steven, Edward Loper and Ewan Klein (2009),
+# Natural Language Processing with Python. O’Reilly Media Inc
+# <- NLTK
+
 
 def runExtraction():
-    data = pd.read_csv('articlesData-ukraine.csv')
+    print("Input the full name of the csv file you wish to commit hot topic extraction on: ")
+    fileName = input("> ")
+    data = pd.read_csv(fileName)
 
     ignore = set(stopwords.words('english'))
     stemmer = WordNetLemmatizer()

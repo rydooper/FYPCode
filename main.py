@@ -9,23 +9,17 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
 
-# cite here for documentation: Bird, Steven, Edward Loper and Ewan Klein (2009),
-# Natural Language Processing with Python. O’Reilly Media Inc
-# <- NLTK
-
 def wordCloud():
-    # get data directory (using getcwd() is needed to support running example in generated IPython notebook)
+    print("Input the full name of the csv file you wish to generate a word cloud on: ")
+    fileName = input("> ")
+    # get data directory
     d = path.dirname(__file__) if "__file__" in locals() else os.getcwd()
-
-    # Read the whole text.
-    text = open(path.join(d, 'articlesData-ukraine.csv'), encoding="utf-8").read()
-
-    # Generate a word cloud image
+    text = open(path.join(d, fileName), encoding="utf-8").read()
+    print("Generating word cloud...")
+    # generate word cloud image
     wordcloud = WordCloud().generate(text)
 
-    # Display the generated image:
-    # the matplotlib way:
-
+    # display with matplotlib
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
 
@@ -53,7 +47,6 @@ if __name__ == "__main__":
                   "and its corresponding chromedriver installed before scraping.")
             dataScraper.webScrape()
         elif userChoice == "2":
-            print("Generating word cloud on previous data stored in articlesData.csv")
             # EDA with word cloud
             wordCloud()
         elif userChoice == "3":

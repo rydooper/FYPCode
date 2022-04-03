@@ -1,6 +1,7 @@
 import csv
 import datetime
 import re
+from country_list import countries_for_language
 from bs4 import BeautifulSoup as Soup
 from selenium.webdriver.common.by import By
 import seleniumWebScraperOptions as ws
@@ -8,9 +9,10 @@ import seleniumWebScraperOptions as ws
 counter = 0
 allArticles = []
 allMetaData = []
-
-
-# global articleTitle, articleSummary, articleLink, articlePublished, articleType, articleLocation, imgSrc, imgAlt
+possibleTypes = ["Programmes", "News"]
+possibleBBCSite = ["BBC News", "BBC Radio", "BBC Radio One", "BBC Radio 4", "BBC World Service", "BBC News Channel",
+                   "BBC Parliament"]
+countries = dict(countries_for_language('en'))
 
 
 class articleData:
@@ -36,13 +38,18 @@ def getArticleContents(driver, link):
 
     # Printing the whole body text
     # "/html/body/div[1]/div/main/div[5]/div/div[1]/article/div[2]/div"
-    allTextContentsStr = driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/main/div[5]/div/div[1]/article/div[2]/div").text
-    allTextContents: list = allTextContentsStr.split('\n')
-    for index, contents in enumerate(allTextContents):
-        if contents == "More on this story":
-            break
-        else:
-            articleContents.append(contents)
+    try:
+        allTextContentsStr = driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/main/"
+                                                                    "div[5]/div/div[1]/article").text
+        allTextContents: list = allTextContentsStr.split('\n')
+        for index, contents in enumerate(allTextContents):
+            if contents == "More on this story":
+                break
+            else:
+                articleContents.append(contents)
+    except Exception as e:
+        errorCaught = 0
+        # just something so that news articles that have videos in them (which break the content collector) are ignored
 
     return articleContents
 
@@ -73,6 +80,9 @@ def runNextPageLoop(driver, userQuery, extraDiv):
 
 def getData(driver, url, userQuery, nextPageCollected):
     global articleType, articleLink, articlePublished, articleLocation, articleTitle, articleSummary, imgSrc, imgAlt
+    articlePublished = None
+    articleLocation = None
+    articleType = None
 
     driver.implicitly_wait(1)
     driver.get(url)
@@ -110,17 +120,26 @@ def getData(driver, url, userQuery, nextPageCollected):
                         # this contains metadata - time since publication, type of article and publisher
                         metaData = element.find("dl", {"class": "ssrcss-vzegzu-MetadataStrip e1ojgjhb2"})
                         articleList = metaData.findAll("span", {"class": "ssrcss-8g95ls-MetadataSnippet ecn1o5v2"})
-                        try:
-                            articlePublished = articleList[0].text
-                            articleType = articleList[1].text
-                            articleLocation = articleList[2].text
-                        except IndexError:
-                            if articlePublished is None:
+                        for i in articleList:
+                            testText = str(i.text)
+                            if testText in possibleTypes:
+                                articleType = testText
+                            elif testText in possibleBBCSite or testText in countries.values():
+                                articleLocation = testText
+                            else:
+                                articlePublished = testText
+
+                        if articleType is None:
+                            articleType = "Unknown"
+                        if articleLocation is None:
+                            articleLocation = "Unknown"
+                        if articlePublished is None:
+                            if articleType == "Programmes":
+                                articlePublished = "Check BBC for Programme release"
+                                # Programmes don't have a specified date on BBC Website,
+                                # usually because they have multiple episodes
+                            else:
                                 articlePublished = "Unknown"
-                            if articleType is None:
-                                articleType = "Unknown"
-                            if articleLocation is None:
-                                articleLocation = "Unknown"
 
                     elif element == items.find("div", {"class": "ssrcss-17h6w1t-PromoImageContainerInner ehnfhlg2"}):
                         # this contains the image data
@@ -158,7 +177,8 @@ def getData(driver, url, userQuery, nextPageCollected):
             nextPageCollected = True
             runNextPageLoop(driver, userQuery, extraDiv)
     except Exception as error:
-        print("Error while webscraping!")
+        print("Some errors while webscraping!")
+        print(error)
 
 
 def webScrape():
@@ -172,8 +192,8 @@ def webScrape():
 
     getData(driver, url, userQuery, nextPageCollected=False)
     driver.close()  # close the driver!
-    csvName = 'articlesData-' + userQuery + '.csv'
-    metaCSVName = 'articlesMetadata-' + userQuery + '.csv'
+    csvName = 'articlesData-' + userQuery + '.csv'  #
+    metaCSVName = 'articlesMetadata-' + userQuery + '.csv'  #
     with open(csvName, 'w', encoding="utf-8") as ad:
         reader = csv.writer(ad, delimiter=",")
         reader.writerow(["title", "summary", "contents"])
@@ -189,7 +209,8 @@ def webScrape():
         reader.writerow(["link", "type", "publisher", "published", "imageSource", "imageAlt"])
         for meta in allMetaData:
             reader.writerow([meta.link, meta.type, meta.publisher, meta.publishDate, meta.imageSrc, meta.imageAlt])
-        reader.writerow(["lastUpdated: ", datetime.datetime.now(), "with userQuery: ", userQuery])
+        userQString = "with userQuery: " + userQuery
+        reader.writerow(["lastUpdated: ", datetime.datetime.now(), userQString])
 
     print("Articles scraped and appended to ", csvName, ", metaData stored in ", metaCSVName)
 
