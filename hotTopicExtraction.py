@@ -61,9 +61,12 @@ def runExtraction():
         newHTE = HTETopics(topic_words)
         allHTE.append(newHTE)
 
-    userQ1 = fileName.split('articlesData')[1]
-    userQuery = userQ1.split('.csv')[0]
-    csvName = 'HTETopics' + userQuery + '.csv'
+    if fileName == 'articlesData.csv':
+        csvName = 'HTETopics.csv'
+    else:
+        userQ1 = fileName.split('articlesData')[1]
+        userQuery = userQ1.split('.csv')[0]
+        csvName = 'HTETopics' + userQuery + '.csv'
     with open(csvName, 'w', encoding="utf-8") as ad:
         reader = csv.writer(ad, delimiter=",")
         reader.writerow('topic')
