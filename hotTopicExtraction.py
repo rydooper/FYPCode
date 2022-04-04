@@ -4,6 +4,7 @@ import csv
 import nltk
 import pandas as pd
 from nltk.stem import WordNetLemmatizer
+from sklearn.decomposition import LatentDirichletAllocation
 
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -32,32 +33,37 @@ def runExtraction():
     fileName = input("> ")
     data = pd.read_csv(fileName)
 
-    ignore = set(stopwords.words('english'))
+    ignoreStopWords = set(stopwords.words('english'))
     stemmer = WordNetLemmatizer()
     text = []
     for sentence in data.contents:
         words = word_tokenize(sentence)
         stemmed = []
         for word in words:
-            if word not in ignore:
+            if word not in ignoreStopWords:
                 stemmed.append(stemmer.lemmatize(word))
         text.append(' '.join(stemmed))
 
-    vec = CountVectorizer(analyzer='word', ngram_range=(1, 1))
-    X = vec.fit_transform(text)
+    countVectorizer = CountVectorizer(analyzer='word', ngram_range=(1, 1))
+    termFrequency = countVectorizer.fit_transform(text)
+    vocab = countVectorizer.get_feature_names_out()
 
-    model = lda.LDA(n_topics=5, random_state=1)
-    model.fit(X)
+    LDAModel = LatentDirichletAllocation(n_components=3)
+    LDAModel.fit(termFrequency)
 
-    topic_word = model.topic_word_
+    for idx, topic in enumerate(LDAModel.components_):
+        print("Topic ", idx, " ".join(vocab[i] for i in topic.argsort()[:-10 - 1:-1]))
 
-    vocab = vec.get_feature_names_out()
-    n_top_words = 5
+    # LDAmodel = lda.LDA(n_topics=5, n_iter=1000, random_state=1)
+    # LDAmodel.fit(termFrequency)
+    '''
+    topicWord = LDAModel.topic_word_
+    nTopWords = 5
 
-    for i, topic_dist in enumerate(topic_word):
-        topic_words = np.array(vocab)[np.argsort(topic_dist)][:-(n_top_words + 1):-1]
-        print('Topic {}: {}'.format(i, ' '.join(topic_words)))
-        newHTE = HTETopics(topic_words)
+    for i, topicDistribution in enumerate(topicWord):
+        topicWords = np.array(vocab)[np.argsort(topicDistribution)][:-(nTopWords + 1):-1]
+        print('Topic {}: {}'.format(i, ' '.join(topicWords)))
+        newHTE = HTETopics(topicWords)
         allHTE.append(newHTE)
 
     if fileName == 'articlesData.csv':
@@ -70,7 +76,7 @@ def runExtraction():
         reader = csv.writer(ad, delimiter=",")
         reader.writerow(["topic"])
         for topic in allHTE:
-            reader.writerow([topic.topics])
+            reader.writerow([topic.topics]) '''
 
 
 if __name__ == '__main__':
