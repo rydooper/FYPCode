@@ -181,9 +181,7 @@ def getData(driver, url, userQuery, nextPageCollected):
         print(error)
 
 
-def webScrape():
-    print("Input topic to extract articles on: ")
-    userQuery = input("> ")
+def webScrape(userQuery):
     url = "https://www.bbc.co.uk/search?q=" + userQuery
     driver = ws.chromeDriverSetup()
     # WebDriver Chrome
@@ -216,4 +214,6 @@ def webScrape():
 
 
 if __name__ == '__main__':
-    webScrape()
+    print("Input topic to extract articles on: ")
+    userQuery = input("> ")
+    webScrape(userQuery)
