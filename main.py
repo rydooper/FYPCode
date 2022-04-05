@@ -18,10 +18,10 @@ if __name__ == "__main__":
               "[2] Manually analyse data ")
         userManual = input("> ")
         if userManual == "1":
-            randNum = random.randint(0, len(allTopics))
-            randCSV = 'articlesData-' + allTopics[randNum] + '.csv'
+            randChoice = random.choice(allTopics)
+            randCSV = 'CSV-Articles/articlesData-' + randChoice + '.csv'
             hte.runExtraction(randCSV)
-            maskName = 'mask-map-' + allTopics[randNum] + '.jpg'
+            maskName = 'images/mask-map-' + randChoice + '.jpg'
             wc.wordCloudWithMask(randCSV, maskName)
         elif userManual == "2":
             print("Do you wish to: "
@@ -38,11 +38,18 @@ if __name__ == "__main__":
                 dataScraper.webScrape(userQuery)
             elif userChoice == "2":
                 # EDA with word cloud
-                print("Input the full name of the csv file you wish to generate a word cloud on: ")
+                print("Input the filepath of the csv file you wish to generate a word cloud on: ")
                 fileName = input("> ")
-                wc.wordCloud(fileName)
+                print("Does this file/topic have a corresponding mask? [1] Yes [2] No")
+                maskYes = input("> ")
+                if maskYes == "2":
+                    wc.wordCloud(fileName)
+                elif maskYes == "1":
+                    print("Input the filepath of the jpg or png file you wish to use for mask: ")
+                    maskName = input("> ")
+                    wc.wordCloudWithMask(fileName, maskName)
             elif userChoice == "3":
-                print("Input the full name of the csv file you wish to commit hot topic extraction on: ")
+                print("Input the filepath of the csv file you wish to commit hot topic extraction on: ")
                 fileName = input("> ")
                 hte.runExtraction(fileName)
             elif userChoice == "4":

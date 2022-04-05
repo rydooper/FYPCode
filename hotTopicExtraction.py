@@ -68,7 +68,7 @@ def runExtraction(fileName):
     else:
         userQ1 = fileName.split('articlesData')[1]
         userQuery = userQ1.split('.csv')[0]
-        csvName = 'HTETopics' + userQuery + '.csv'
+        csvName = 'CSV-Articles/HTETopics' + userQuery + '.csv'
     with open(csvName, 'w', encoding="utf-8") as ad:
         reader = csv.writer(ad, delimiter=",")
         reader.writerow(["topic"])

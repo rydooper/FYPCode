@@ -12,16 +12,14 @@ def wordCloudWithMask(filename, maskname):
     d = path.dirname(__file__) if "__file__" in locals() else os.getcwd()
     # Read the whole text.
     text = open(path.join(d, filename), encoding="utf-8").read()
+    print("Generating word cloud...")
 
-    # read the mask image
-    # taken from
+    # read the mask image - taken from
     # https://www.worldatlas.com/maps <- all maps
-
     imageMask = np.array(Image.open(path.join(d, maskname)))
 
     stopwords = set(STOPWORDS)
     stopwords.add("said")
-
     wc = WordCloud(background_color="white", max_words=2000, mask=imageMask,
                    stopwords=stopwords, contour_width=3, contour_color='steelblue')
 
@@ -30,6 +28,7 @@ def wordCloudWithMask(filename, maskname):
 
     # save word cloud as png image
     imgName = str(filename.split('.csv')[0])
+    imgName = str(imgName.split('CSV-Articles/')[1])
     imgName = 'wordCloud-' + imgName + '.png'
     wc.to_file(path.join(d, imgName))
 
@@ -50,7 +49,8 @@ def wordCloud(filename):
     wordcloud = WordCloud().generate(text)
     # store to file
     imgName = str(filename.split('.csv'))
-    imgName = 'wordCloud-' + imgName + '.png'
+    imgName = str(imgName.split('CSV-Articles/')[1])
+    imgName = 'images/wordCloud-' + imgName + '.png'
     wordcloud.to_file(path.join(d, imgName))
 
     # display with a low max font size
