@@ -77,6 +77,6 @@ def runExtraction(fileName):
 
 
 if __name__ == '__main__':
-    print("Input the full name of the csv file you wish to commit hot topic extraction on: ")
+    print("Input the filepath of the csv file you wish to commit hot topic extraction on: ")
     fileName = input("> ")
     runExtraction(fileName)

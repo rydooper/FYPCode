@@ -29,7 +29,7 @@ def wordCloudWithMask(filename, maskname):
     # save word cloud as png image
     imgName = str(filename.split('.csv')[0])
     imgName = str(imgName.split('CSV-Articles/')[1])
-    imgName = 'wordCloud-' + imgName + '.png'
+    imgName = 'images/wordCloud-' + imgName + '.png'
     wc.to_file(path.join(d, imgName))
 
     # show
@@ -62,13 +62,13 @@ def wordCloud(filename):
 
 
 if __name__ == '__main__':
-    print("Input the full name of the csv file you wish to generate a word cloud on: ")
+    print("Input the filepath of the csv file you wish to generate a word cloud on: ")
     fileName = input("> ")
     print("Does this file/topic have a corresponding mask? [1] Yes [2] No")
     maskYes = input("> ")
     if maskYes == "2":
         wordCloud(fileName)
     elif maskYes == "1":
-        print("Input the full name of the jpg or png file you wish to use for mask: ")
+        print("Input the filepath of the jpg or png file you wish to use for mask: ")
         maskName = input("> ")
         wordCloudWithMask(fileName, maskName)
