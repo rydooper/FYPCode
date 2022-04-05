@@ -14,21 +14,31 @@ if __name__ == "__main__":
     takingQueries = True
     while takingQueries:
         print("Do you wish to: "
-              "[1] Run a preset analysis on available data "
-              "[2] Manually analyse data ")
+              "[1] Run a complete webscrape and analysis on a topic "
+              "[2] Run a preset analysis on available data "
+              "[3] Manually analyse data "
+              "[4] Close program ")
         userManual = input("> ")
         if userManual == "1":
+            print("Please ensure you have a valid version of chrome "
+                  "and its corresponding chromedriver installed before scraping.")
+            print("Input topic to extract articles on: ")
+            userQuery = input("> ")
+            dataScraper.webScrape(userQuery)
+            csvName = 'CSV-Articles/articlesData-' + userQuery + '.csv'
+            hte.runExtraction(csvName)
+            wc.wordCloud(csvName)
+        elif userManual == "2":
             randChoice = random.choice(allTopics)
             randCSV = 'CSV-Articles/articlesData-' + randChoice + '.csv'
             hte.runExtraction(randCSV)
             maskName = 'images/mask-map-' + randChoice + '.jpg'
             wc.wordCloudWithMask(randCSV, maskName)
-        elif userManual == "2":
+        elif userManual == "3":
             print("Do you wish to: "
                   "[1] Scrape for articles on a specified topic "
                   "[2] Generate a wordcloud on available data "
-                  "[3] Run hot topic extraction on available data "
-                  "[4] Close Program ")
+                  "[3] Run hot topic extraction on available data ")
             userChoice = input("> ")
             if userChoice == "1":
                 print("Please ensure you have a valid version of chrome "
@@ -52,8 +62,8 @@ if __name__ == "__main__":
                 print("Input the filepath of the csv file you wish to commit hot topic extraction on: ")
                 fileName = input("> ")
                 hte.runExtraction(fileName)
-            elif userChoice == "4":
-                print("Exiting program now.")
-                takingQueries = False
-            else:
-                print("Unclear input, retry.")
+        elif userManual == "4":
+            print("Exiting program now.")
+            takingQueries = False
+        else:
+            print("Unclear input, retry.")

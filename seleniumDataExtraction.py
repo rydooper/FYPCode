@@ -36,8 +36,7 @@ def getArticleContents(driver, link):
     driver.get(link)
     articleContents: list = []
 
-    # Printing the whole body text
-    # "/html/body/div[1]/div/main/div[5]/div/div[1]/article/div[2]/div"
+    # getting all text in article class (where the text is)
     try:
         allTextContentsStr = driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/main/"
                                                                     "div[5]/div/div[1]/article").text
@@ -74,8 +73,8 @@ def runNextPageLoop(driver, userQuery, extraDiv):
             continue
         indexStr = str(integer)
         nextUrl = "https://www.bbc.co.uk/search?q=" + userQuery + "&page=" + indexStr
-        print("Moving to page: ", indexStr)
         getData(driver, nextUrl, userQuery, nextPageCollected=True)
+    print("Scraped " + str(lastItemNum) + " pages.")
 
 
 def getData(driver, url, userQuery, nextPageCollected):
@@ -177,28 +176,28 @@ def getData(driver, url, userQuery, nextPageCollected):
             nextPageCollected = True
             runNextPageLoop(driver, userQuery, extraDiv)
     except Exception as error:
-        print("Some errors while webscraping!")
-        print(error)
+        errorCaught = 0
+        # just something so that any pages which break the content collector are ignored
 
 
-def webScrape(userQuery):
-    url = "https://www.bbc.co.uk/search?q=" + userQuery
+def webScrape(UserQuery):
+    url = "https://www.bbc.co.uk/search?q=" + UserQuery
     driver = ws.chromeDriverSetup()
     # WebDriver Chrome
     # driver = webdriver.Chrome(ChromeDriverManager().install())
     # #<- test this later to see if user doesnt have to manually download chromedriver
 
-    getData(driver, url, userQuery, nextPageCollected=False)
+    getData(driver, url, UserQuery, nextPageCollected=False)
     driver.close()  # close the driver!
-    csvName = 'articlesData-' + userQuery + '.csv'  #
-    metaCSVName = 'articlesMetadata-' + userQuery + '.csv'  #
+    csvName = 'CSV-Articles/articlesData-' + UserQuery + '.csv'  #
+    metaCSVName = 'CSV-Articles/articlesMetadata-' + UserQuery + '.csv'  #
     with open(csvName, 'w', encoding="utf-8") as ad:
         reader = csv.writer(ad, delimiter=",")
         reader.writerow(["title", "summary", "contents"])
         # writes all the articles found to articlesData.csv
         for article in allArticles:
             reader.writerow([article.title, article.summary, article.contents])
-        userQString = "with userQuery: " + userQuery
+        userQString = "with userQuery: " + UserQuery
         finalRow = ["lastUpdated: ", datetime.datetime.now(), userQString]
         reader.writerow(finalRow)
 
@@ -207,7 +206,7 @@ def webScrape(userQuery):
         reader.writerow(["link", "type", "publisher", "published", "imageSource", "imageAlt"])
         for meta in allMetaData:
             reader.writerow([meta.link, meta.type, meta.publisher, meta.publishDate, meta.imageSrc, meta.imageAlt])
-        userQString = "with userQuery: " + userQuery
+        userQString = "with userQuery: " + UserQuery
         reader.writerow(["lastUpdated: ", datetime.datetime.now(), userQString])
 
     print("Articles scraped and appended to ", csvName, ", metaData stored in ", metaCSVName)

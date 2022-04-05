@@ -30,6 +30,7 @@ class HTETopics:
 
 def runExtraction(fileName):
     data = pd.read_csv(fileName)
+    print("Extracting topics...")
 
     ignoreStopWords = set(stopwords.words('english'))
     stemmer = WordNetLemmatizer()
