@@ -47,11 +47,6 @@ def runExtraction(fileName):
     termFrequency = countVectorizer.fit_transform(text)
     vocab = countVectorizer.get_feature_names_out()
 
-    '''LDAModel = LatentDirichletAllocation(n_components=3)
-    LDAModel.fit(termFrequency)
-    for idx, topic in enumerate(LDAModel.components_):
-        print("Topic ", idx, " ".join(vocab[i] for i in topic.argsort()[:-10 - 1:-1]))'''
-
     LDAModel = lda.LDA(n_topics=5, n_iter=1000, random_state=1)
     LDAModel.fit(termFrequency)
 

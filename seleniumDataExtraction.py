@@ -4,6 +4,7 @@ import re
 from country_list import countries_for_language
 from bs4 import BeautifulSoup as Soup
 from selenium.webdriver.common.by import By
+
 import seleniumWebScraperOptions as ws
 
 counter = 0
