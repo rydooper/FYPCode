@@ -28,7 +28,8 @@ def wordCloudWithMask(filename, maskname):
 
     # save word cloud as png image
     imgName = str(filename.split('.csv')[0])
-    imgName = str(imgName.split('CSV-Articles/')[1])
+    if 'CSV-Articles' in imgName:
+        imgName = str(imgName.split('CSV-Articles/')[1])
     imgName = 'images/wordCloud-' + imgName + '.png'
     wc.to_file(path.join(d, imgName))
 
@@ -49,7 +50,8 @@ def wordCloud(filename):
     wordcloud = WordCloud().generate(text)
     # store to file
     imgName = str(filename.split('.csv'))
-    imgName = str(imgName.split('CSV-Articles/')[1])
+    if 'CSV-Articles' in imgName:
+        imgName = str(imgName.split('CSV-Articles/')[1])
     imgName = 'images/wordCloud-' + imgName + '.png'
     wordcloud.to_file(path.join(d, imgName))
 

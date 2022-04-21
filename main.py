@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 # ryder franklin
 # FYP - AI news extraction
-import random
 
 import seleniumDataExtraction as dataScraper
 import hotTopicExtraction as hte
 import wordCloudGeneration as wc
-
-allTopics = ['EU', 'france', 'ukraine']
 
 if __name__ == "__main__":
     # create the driver object.
@@ -29,11 +26,17 @@ if __name__ == "__main__":
             hte.runExtraction(csvName)
             wc.wordCloud(csvName)
         elif userManual == "2":
-            randChoice = random.choice(allTopics)
-            randCSV = 'CSV-Articles/articlesData-' + randChoice + '.csv'
-            hte.runExtraction(randCSV)
-            maskName = 'images/mask-map-' + randChoice + '.jpg'
-            wc.wordCloudWithMask(randCSV, maskName)
+            print("Input the filepath to the CSV file you wish to extract topics from and create a word cloud: ")
+            csvChoice = input("> ")
+            hte.runExtraction(csvChoice)
+            print("Use image mask? [1] Yes [2] No")
+            imgMskChoice = input("> ")
+            if imgMskChoice == "1":
+                print("Input filepath to mask: ")
+                maskName = input("> ")
+                wc.wordCloudWithMask(csvChoice, maskName)
+            else:
+                wc.wordCloud(csvChoice)
         elif userManual == "3":
             print("Do you wish to: "
                   "[1] Scrape for articles on a specified topic "

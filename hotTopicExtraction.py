@@ -4,7 +4,6 @@ import csv
 import nltk
 import pandas as pd
 from nltk.stem import WordNetLemmatizer
-from sklearn.decomposition import LatentDirichletAllocation
 
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -16,9 +15,6 @@ from nltk.tokenize import word_tokenize
 import lda
 from sklearn.feature_extraction.text import CountVectorizer
 
-# cite here for documentation: Bird, Steven, Edward Loper and Ewan Klein (2009),
-# Natural Language Processing with Python. O’Reilly Media Inc
-# <- NLTK
 
 allHTE = []
 
@@ -59,8 +55,8 @@ def runExtraction(fileName):
         newHTE = HTETopics(topicWords)
         allHTE.append(newHTE)
 
-    if fileName == 'articlesData.csv':
-        csvName = 'HTETopics.csv'
+    if fileName == 'CSV-Articles/articlesData.csv':
+        csvName = 'CSV-Articles/HTETopics.csv'
     else:
         userQ1 = fileName.split('articlesData')[1]
         userQuery = userQ1.split('.csv')[0]

@@ -185,8 +185,6 @@ def webScrape(UserQuery):
     url = "https://www.bbc.co.uk/search?q=" + UserQuery
     driver = ws.chromeDriverSetup()
     # WebDriver Chrome
-    # driver = webdriver.Chrome(ChromeDriverManager().install())
-    # #<- test this later to see if user doesnt have to manually download chromedriver
 
     getData(driver, url, UserQuery, nextPageCollected=False)
     driver.close()  # close the driver!
