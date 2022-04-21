@@ -3,15 +3,19 @@
 This program was created for my disseration / final year project at NTU.
 
 Currently, it can extract news articles from BBC News, extract hot topics from this data and create a word cloud for this data.
+
 For the best results for topic extraction and word cloud generation, place your CSV articles data in the CSV-Articles folder.
+
 Future development will include: a larger corpus (more news sources) and some machine learning algorithms (1 - to rank relevance of article; 2 - to filter fake news).
+
+<br>
 
 FAQ:
 <br>
 
 Q) How to setup news extraction?
 
-A) Download a chrome broswer and note the version (likely v98 or 99).
+A) Download a chrome browser and note the version (likely v98 or 99).
 Download the chromedriver for this version, then place the driver file in a folder with this directory C:/Selenium
 
 <br>
